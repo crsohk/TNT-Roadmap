@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-title" content="TNT">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2865/2865910.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://cdn-icons-png.flaticon.com/512/2865/2865910.png">
+    <title>TNT: Rectal Cancer Treatment Roadmap</title>
+    <style>
+        :root { 
+            --nchm-clr: #2e7d32; --ccrt-clr: #007aff; --ctnt-clr: #5856d6; --itnt-clr: #ff9500;
+            --apple-red: #ff3b30; --apple-bg: #faf8f2; --snubh-dark-green: #1b5e20; --element-bg: #f3f0e9; 
+        }
+
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--snubh-dark-green); display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.8s ease-out; visibility: visible;
+        }
+        .splash-content { text-align: center; width: 90%; }
+        .snubh-logo-img { width: 100%; max-width: 230px; background: rgba(255,255,255,0.98); padding: 15px; border-radius: 12px; }
+        
+        /* [수정] SF Pro Medium(500) 적용 - 예리하고 지적인 무게감 */
+        .splash-sub { 
+            font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif; 
+            font-size: 20px; 
+            font-weight: 500; /* Bold(700)에서 Medium(500)으로 하향 */
+            color: white; 
+            letter-spacing: 2px; /* 자간을 더 넓혀 가늘고 세련된 느낌 강조 */
+            margin-top: 25px; 
+            text-transform: uppercase; 
+            line-height: 1.2;
+        }
+        .hide-splash { opacity: 0 !important; pointer-events: none !important; }
+
+        * { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; box-sizing: border-box; }
+        body { background-color: var(--apple-bg) !important; margin: 0; padding: 10px 15px; color: #1d1d1f; -webkit-font-smoothing: antialiased; }
+        .app-card { max-width: 480px; margin: auto; }
+        
+        .header { text-align: center; margin-bottom: 10px; }
+        .header img { width: 120px; margin-bottom: 5px; }
+        /* [중요] Treatment 생략하지 않은 공식 제목 */
+        .header h1 { font-weight: 500; font-size: 18px; margin: 0; letter-spacing: -0.05em; color: #1d1d1f; }
+
+        .tab-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 12px; background: var(--element-bg); padding: 5px; border-radius: 14px; }
+        .tab-btn { padding: 12px 0; border-radius: 10px; border: none; background: transparent; font-weight: 900; font-size: 15px; color: #86868b; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.12); }
+        #btn-nchm.active { color: var(--nchm-clr); }
+        #btn-ccrt.active { color: var(--ccrt-clr); }
+        #btn-ctnt.active { color: var(--ctnt-clr); }
+        #btn-itnt.active { color: var(--itnt-clr); }
+
+        .input-container { background: var(--element-bg); border-radius: 18px; padding: 10px 20px; border: 1px solid #e1ddd3; margin-bottom: 12px; }
+        label { font-size: 11px; font-weight: 900; color: #86868b; text-transform: uppercase; margin-bottom: 2px; display: block; }
+        input[type="date"] { border: none; width: 100%; font-size: 22px; font-weight: 900; background: transparent; outline: none; color: #000; letter-spacing: -0.03em; }
+
+        .schedule-list { margin-top: 5px; }
+        .schedule-row { display: flex; align-items: center; gap: 15px; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .schedule-row:last-child { border-bottom: none; }
+
+        .row-gauge { position: relative; width: 14px; height: 45px; flex-shrink: 0; }
+        .row-bar { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: var(--element-bg); border-radius: 2px; transform: translateX(-50%); }
+        .row-dot { position: absolute; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; background: white; border: 3px solid #e5e5e7; border-radius: 50%; z-index: 2; box-shadow: 0 0 0 2px var(--apple-bg); transition: top 0.5s ease-out; }
+
+        .row-content { flex: 1; overflow: hidden; }
+        .row-date { font-weight: 900; font-size: 20px; color: #000; line-height: 1.1; letter-spacing: -0.03em; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+        .row-label { font-size: 16px; color: #636366; margin-top: 1px; font-weight: 700; }
+        
+        .date-item { display: inline-flex; align-items: center; white-space: nowrap; }
+        .date-divider { color: #d1d1d6; margin: 0 4px; font-weight: 400; font-size: 16px; }
+        .day-tag { font-size: 10px; padding: 1px 5px; border-radius: 4px; background: var(--element-bg); font-weight: 900; color: #86868b; margin-left: 3px; }
+
+        .theme-nchm .row-dot { border-color: var(--nchm-clr); }
+        .theme-ccrt .row-dot { border-color: var(--ccrt-clr); }
+        .theme-ctnt .row-dot { border-color: var(--ctnt-clr); }
+        .theme-itnt .row-dot { border-color: var(--itnt-clr); }
+        .special .row-date { color: var(--apple-red); }
+        .special .row-dot { border-color: var(--apple-red) !important; width: 14px; height: 14px; }
+    </style>
+</head>
+<body>
+
+<div id="splash" onclick="this.classList.add('hide-splash')">
+    <div class="splash-content">
+        <img src="https://www.snubh.org/front/images/header/tit_logo.png" class="snubh-logo-img">
+        <div class="splash-sub">COLORECTAL<br>CANCER CENTER</div>
+    </div>
+</div>
+
+<div class="app-card">
+    <div class="header">
+        <img src="https://www.snubh.org/front/images/header/tit_logo.png">
+        <h1>Rectal Cancer Treatment Roadmap</h1>
+    </div>
+
+    <div class="tab-menu">
+        <button class="tab-btn active" id="btn-nchm" onclick="setMode('nchm')">nChemo</button>
+        <button class="tab-btn" id="btn-ccrt" onclick="setMode('ccrt')">CCRT</button>
+        <button class="tab-btn" id="btn-ctnt" onclick="setMode('ctnt')">cTNT</button>
+        <button class="tab-btn" id="btn-itnt" onclick="setMode('itnt')">iTNT</button>
+    </div>
+
+    <div class="input-container">
+        <label id="dateLabel">XELOX #1 Start Date</label>
+        <input type="date" id="baseDate" onchange="calculate()">
+    </div>
+
+    <div id="schedule-list" class="schedule-list"></div>
+</div>
+
+<script>
+    setTimeout(() => document.getElementById('splash').classList.add('hide-splash'), 3000);
+    
+    let mode = 'nchm';
+    
+    // [유지] 2026-2030 대한민국 전체 공휴일 및 대체공휴일 데이터 (v14.2)
+    const HOLIDAYS = ["2026-01-01","2026-02-16","2026-02-17","2026-02-18","2026-03-01","2026-03-02","2026-05-05","2026-05-24","2026-05-25","2026-06-03","2026-06-06","2026-08-15","2026-08-17","2026-09-24","2026-09-25","2026-09-26","2026-10-03","2026-10-05","2026-10-09","2026-12-25","2027-01-01","2027-02-06","2027-02-07","2027-02-08","2027-02-09","2027-03-01","2027-03-03","2027-05-05","2027-05-13","2027-06-06","2027-06-07","2027-08-15","2027-08-16","2027-09-14","2027-09-15","2027-09-16","2027-10-03","2027-10-04","2027-10-09","2027-10-11","2027-12-25","2027-12-27","2028-01-01","2028-01-26","2028-01-27","2028-01-28","2028-03-01","2028-05-02","2028-05-05","2028-06-06","2028-08-15","2028-10-02","2028-10-03","2028-10-04","2028-10-05","2028-10-09","2028-12-25","2029-01-01","2029-02-12","2029-02-13","2029-02-14","2029-03-01","2029-05-05","2029-05-07","2029-05-20","2029-05-21","2029-06-06","2029-08-15","2029-09-21","2029-09-22","2029-09-23","2029-09-24","2029-10-03","2029-10-09","2029-12-25","2030-01-01","2030-02-02","2030-02-03","2030-02-04","2030-02-05","2030-03-01","2030-05-05","2030-05-06","2030-05-09","2030-06-06","2030-08-15","2030-09-11","2030-09-12","2030-09-13","2030-10-03","2030-10-09","2030-12-25"];
+
+    // [이하 로직 동일 보존]
+    function setMode(m) {
+        mode = m;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + m).classList.add('active');
+        document.getElementById('dateLabel').innerText = (m === 'itnt' || m === 'nchm') ? "XELOX #1 Start Date" : "CRT Start Date";
+        calculate();
+    }
+
+    function isHoliday(date) {
+        const s = date.toISOString().split('T')[0];
+        return date.getDay() === 0 || date.getDay() === 6 || HOLIDAYS.includes(s);
+    }
+
+    function addWorkDays(start, days) {
+        let d = new Date(start);
+        let count = 0;
+        while (count < days) {
+            if (!isHoliday(d)) count++;
+            if (count < days) d.setDate(d.getDate() + 1);
+        }
+        return d;
+    }
+
+    function findNextSpecificDay(baseDate, targetDay) {
+        let d = new Date(baseDate);
+        while (d.getDay() !== targetDay || isHoliday(d)) d.setDate(d.getDate() + 1);
+        return d;
+    }
+
+    function findNextTwoOptions(baseDate, targetDays) {
+        let results = [];
+        let d = new Date(baseDate);
+        while (results.length < 2) {
+            if (targetDays.includes(d.getDay()) && !isHoliday(d)) results.push(new Date(d));
+            d.setDate(d.getDate() + 1);
+        }
+        return results;
+    }
+
+    function calculate() {
+        const baseInput = document.getElementById('baseDate').value;
+        if (!baseInput) return;
+        const base = new Date(baseInput);
+        const fmt = (d) => `${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`;
+        const dayName = (d) => d.toLocaleDateString('en-US', {weekday:'short'});
+        const addDays = (d, n) => { let r = new Date(d); r.setDate(r.getDate() + n); return r; };
+
+        let nodes = [];
+        if (mode === 'ccrt') {
+            const rtEnd = addWorkDays(base, 25);
+            const wunDate = findNextSpecificDay(addDays(rtEnd, 56), 4);
+            nodes = [
+                { l: "Start of CRT", d: base }, { l: "End of CRT", d: rtEnd }, { l: "Restaging W/U", d: wunDate },
+                { l: "Surgery OPD Visit (M/Th)", d: findNextTwoOptions(addDays(wunDate, 4), [1, 4]), m: true },
+                { l: "Scheduled Surgery (W/F)", d: findNextTwoOptions(addDays(wunDate, 11), [3, 5]), m: true, s: true }
+            ];
+        } else if (mode === 'ctnt') {
+            const rtEnd = addWorkDays(base, 25);
+            const xEnd = addDays(rtEnd, 14 + 77);
+            const wunDate = findNextSpecificDay(addDays(xEnd, 14), 4);
+            nodes = [
+                { l: "Start of CRT", d: base }, { l: "Start of XELOX Cycle #1", d: addDays(rtEnd, 14) }, { l: "End of XELOX #4", d: xEnd },
+                { l: "Restaging W/U", d: wunDate }, { l: "Surgery OPD Visit (M/Th)", d: findNextTwoOptions(addDays(wunDate, 4), [1, 4]), m: true },
+                { l: "Scheduled Surgery (W/F)", d: findNextTwoOptions(addDays(wunDate, 11), [3, 5]), m: true, s: true }
+            ];
+        } else if (mode === 'itnt') {
+            const xEnd = addDays(base, 77);
+            const rtStart = addDays(xEnd, 14);
+            const rtEnd = addWorkDays(rtStart, 25);
+            const wunDate = findNextSpecificDay(addDays(rtEnd, 56), 4);
+            nodes = [
+                { l: "Start of XELOX Cycle #1", d: base }, { l: "End of XELOX Cycle #4", d: xEnd }, { l: "Start of CRT", d: rtStart },
+                { l: "End of CRT", d: rtEnd }, { l: "Restaging W/U", d: wunDate }, { l: "Surgery OPD Visit (M/Th)", d: findNextTwoOptions(addDays(wunDate, 4), [1, 4]), m: true },
+                { l: "Scheduled Surgery (W/F)", d: findNextTwoOptions(addDays(wunDate, 11), [3, 5]), m: true, s: true }
+            ];
+        } else {
+            const xEnd = addDays(base, 77);
+            const wunDate = findNextSpecificDay(addDays(xEnd, 14), 4);
+            nodes = [
+                { l: "Start of XELOX Cycle #1", d: base }, { l: "End of XELOX #4", d: xEnd }, { l: "Restaging W/U", d: wunDate },
+                { l: "Surgery OPD Visit (M/Th)", d: findNextTwoOptions(addDays(wunDate, 4), [1, 4]), m: true },
+                { l: "Scheduled Surgery (W/F)", d: findNextTwoOptions(addDays(wunDate, 11), [3, 5]), m: true, s: true }
+            ];
+        }
+
+        const startTs = base.getTime();
+        const lastNodeDate = nodes[nodes.length-1].d;
+        const endTs = (Array.isArray(lastNodeDate) ? lastNodeDate[0] : lastNodeDate).getTime();
+        const totalDuration = endTs - startTs;
+
+        const listContainer = document.getElementById('schedule-list');
+        listContainer.innerHTML = '';
+
+        nodes.forEach((n) => {
+            const currentTs = (Array.isArray(n.d) ? n.d[0] : n.d).getTime();
+            const ratio = (currentTs - startTs) / totalDuration;
+            
+            let dateHtml = '';
+            if (n.m) {
+                dateHtml = `<span class="date-item">${fmt(n.d[0])}<span class="day-tag">${dayName(n.d[0])}</span></span><span class="date-divider">|</span><span class="date-item">${fmt(n.d[1])}<span class="day-tag">${dayName(n.d[1])}</span></span>`;
+            } else {
+                dateHtml = `<span class="date-item">${fmt(n.d)}<span class="day-tag">${dayName(n.d)}</span></span>`;
+            }
+            
+            const row = document.createElement('div');
+            row.className = `schedule-row ${n.s ? 'special' : ''}`;
+            row.innerHTML = `<div class="row-gauge"><div class="row-bar"></div><div class="row-dot" style="top: ${ratio * 100}%"></div></div><div class="row-content"><div class="row-date">${dateHtml}</div><div class="row-label">${n.l}</div></div>`;
+            listContainer.appendChild(row);
+        });
+    }
+</script>
+</body>
+</html>
