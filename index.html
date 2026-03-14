@@ -103,7 +103,7 @@
     <div id="schedule-list"></div>
 
     <div class="footer-info">
-        SNUBH Plan v1.2025 | Created by Pf. Eriksen Oh<br>
+        SNUBH Plan v1.2025<br>
         © 2026 All Rights Reserved.
     </div>
 </div>
@@ -177,8 +177,8 @@
             const x3End = addDays(base, 63);
             const rtStart = addDays(x3End, 14); 
             const rtEnd = addWorkDays(rtStart, 25);
-            const x4Start = addDays(rtEnd, 14); // RT 종료 2주 후 #4 시작
-            const x5End = addDays(x4Start, 42); // #4,5 시작 후 6주 뒤 종료
+            const x4Start = addDays(rtEnd, 14); 
+            const x5End = addDays(x4Start, 42); 
             const wunDate = findNextSpecificDay(addDays(rtEnd, 56), 4);
             nodes = [
                 { l: "Start of XELOX #1", d: base },
