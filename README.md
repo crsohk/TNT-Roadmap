@@ -10,7 +10,7 @@ Rectal Cancer Treatment Roadmap
 - **Date of Creation:** March 14, 2026
 
 ## 🔬 Clinical Background
-본 로드맵의 알고리즘은 최신 글로벌 임상 가이드라인 및 주요 트라이얼(PROSPECT, OPRA, PRODIGE 23, RAPIDO 등)의 표준 프로토콜을 기반으로 설계되었습니다. 특히 실제 임상 현장에서의 검사 주기와 외래/수술 세션을 고려하여 최적화되었습니다.
+본 로드맵의 알고리즘은 최신 글로벌 임상 가이드라인 및 주요 트라이얼(PROSPECT, OPRA, PRODIGE 23, RAPIDO 등)의 근거와 분당서울대병원 대장암 센터의 표준 프로토콜을 기반으로 설계되었습니다. 특히 실제 임상 현장에서의 검사 주기와 외래/수술 세션을 고려하여 최적화되었습니다.
 
 ## ⚖️ Copyright & License
 Copyright © 2026 Pf. Eriksen Oh. All rights reserved.
