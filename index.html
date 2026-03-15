@@ -285,9 +285,10 @@ function generateAndShowQR() {
             return;
         }
         
-        // 💡 플랜 F: 아이폰 AI의 오해를 원천 차단하는 '메일 본문' 규격
-        // 제목(Subject)을 넣어줌으로써 '연락처'로 오인할 확률을 0%로 만듭니다.
-        const mailFormat = "mailto:?subject=" + encodeURIComponent("[SNUBH] 직장암 치료 로드맵") + "&body=" + encodeURIComponent(currentQRText);
+        // 💡 어르신들을 위한 최적의 처방: 
+        // 1. sms: 뒤에 바로 내용을 붙이지 않고 ?body= 규격을 정확히 지킵니다.
+        // 2. 안드로이드와 아이폰 모두에서 '문자 메시지'로 인식하게 만드는 표준 규격입니다.
+        const smsFormat = "sms:?body=" + encodeURIComponent(currentQRText);
         
         document.getElementById("qr-overlay").style.display = "flex";
         
@@ -295,19 +296,19 @@ function generateAndShowQR() {
             try {
                 QRCode.toCanvas(
                     document.getElementById("qrcode"), 
-                    mailFormat, // 💡 메일 규격 데이터 주입
+                    smsFormat, 
                     {
                         width: 260,
-                        margin: 3,
-                        errorCorrectionLevel: 'L', // 데이터가 많으므로 복원율을 낮춰 밀도를 최적화
+                        margin: 4,
+                        errorCorrectionLevel: 'M', 
                         color: { dark: '#000000', light: '#ffffff' }
                     }, 
                     function (error) {
-                        if (error) alert("QR 변환 오류: " + error);
+                        if (error) alert("QR 생성 실패: " + error);
                     }
                 );
             } catch (error) {
-                alert("렌더링 오류: " + error.message);
+                alert("오류: " + error.message);
             }
         }, 100); 
     }
