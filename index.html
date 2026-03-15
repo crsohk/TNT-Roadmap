@@ -247,7 +247,7 @@
         nodes.push({ l: "Surgery OPD Visit (M/Th)", d: findNextTwoOptions(addDays(lastWu, 4), [1, 4]), m: true });
         nodes.push({ l: "Scheduled Surgery (W/F)", d: findNextTwoOptions(addDays(lastWu, 11), [3, 5]), m: true, s: true });
 
-        let qrText = "[분당서울대병원 직장암 치료 일정]\n\n";
+        let qrText = "📋 [에릭센 교수팀 맞춤형 치료 일정]\n(분당서울대병원)\n\n";
         qrText += "⚠️ 주의: 본 일정은 통상적인 일정이며, 검사 결과 및 환자분 상태에 따라 진료 시 변경될 수 있습니다.\n\n";
         nodes.forEach((n) => {
             let dStr = Array.isArray(n.d) ? `${fmt(n.d[0])} 또는 ${fmt(n.d[1])}` : fmt(n.d);
