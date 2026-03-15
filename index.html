@@ -117,12 +117,14 @@
     <div id="qr-container" style="background: white; padding: 30px 20px; border-radius: 20px; width: 90%; max-width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">
         <h2 style="color: var(--apple-red); font-size: 18px; margin-top: 0; margin-bottom: 10px; letter-spacing: -0.05em;">⚠️ 일정 안내</h2>
         <p style="margin-bottom: 20px; font-size: 14px; font-weight: 700; color: #1d1d1f; line-height: 1.4;">환자분의 스마트폰 기본 카메라로<br>아래 QR 코드를 비춰주세요.</p>
-        <div id="qrcode" style="display: flex; justify-content: center; padding: 15px; background: #f5f5f7; border-radius: 12px; margin-bottom: 20px;"></div>
+        
+        <canvas id="qrcode" style="display: block; margin: 0 auto 20px auto; padding: 15px; background: #f5f5f7; border-radius: 12px;"></canvas>
+        
         <button onclick="closeQR()" style="padding: 12px 0; width: 100%; background: #007aff; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">확인 및 닫기</button>
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -135,11 +137,7 @@
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
         const modeParam = urlParams.get('mode');
-        
-        if (modeParam) {
-            setMode(modeParam); 
-        }
-        
+        if (modeParam) setMode(modeParam); 
         setTimeout(() => document.getElementById('splash').classList.add('hide-splash'), 2500);
     };
 
@@ -249,7 +247,6 @@
         nodes.push({ l: "Surgery OPD Visit (M/Th)", d: findNextTwoOptions(addDays(lastWu, 4), [1, 4]), m: true });
         nodes.push({ l: "Scheduled Surgery (W/F)", d: findNextTwoOptions(addDays(lastWu, 11), [3, 5]), m: true, s: true });
 
-        // 💡 QR 코드로 구워낼 텍스트 문장 자동 조립 (교수님 수정본 완벽 적용)
         let qrText = "[분당서울대병원 직장암 치료 일정]\n\n";
         qrText += "⚠️ 주의: 본 일정은 통상적인 일정이며, 검사 결과 및 환자분 상태에 따라 진료 시 변경될 수 있습니다.\n\n";
         nodes.forEach((n) => {
@@ -279,45 +276,38 @@
             listContainer.appendChild(row);
         });
 
-        // 💡 계산 완료 직후 숨어있던 QR 버튼을 화면에 표출
         document.getElementById('qrButton').style.display = 'flex';
     }
 
-function generateAndShowQR() {
+    function generateAndShowQR() {
         if (!currentQRText) {
             alert("먼저 날짜를 입력하여 스케줄을 계산해 주세요.");
             return;
         }
         
-        // 💡 1. 팝업창(도화지)을 화면에 먼저 펼칩니다.
         document.getElementById("qr-overlay").style.display = "flex";
         
-        // 💡 2. 사파리가 화면을 그릴 시간을 0.1초(100ms) 벌어준 뒤 QR을 생성합니다.
         setTimeout(function() {
             try {
-                if (typeof QRCode === 'undefined') {
+                if (typeof QRious === 'undefined') {
                     alert("QR 엔진이 로드되지 않았습니다. 인터넷 연결을 확인하거나 새로고침 해보세요.");
                     document.getElementById("qr-overlay").style.display = "none";
                     return;
                 }
 
-                document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), {
-                    text: currentQRText,
-                    width: 200,
-                    height: 200,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.M
+                // 💡 대용량 처리가 가능한 QRious 실행 로직
+                new QRious({
+                    element: document.getElementById("qrcode"),
+                    value: currentQRText,
+                    size: 220,
+                    level: 'L' // 데이터 수용량을 최대로 늘리기 위해 복원율을 'Low'로 설정
                 });
             } catch (error) {
-                // 어떤 에러인지 정확히 확인하기 위해 상세 메시지를 띄웁니다.
                 alert("QR 렌더링 오류 상세 원인: " + error.message);
             }
-        }, 100); // 100 밀리초(0.1초) 지연
+        }, 100); 
     }
 
-    // 닫기 버튼 로직
     function closeQR() {
         document.getElementById("qr-overlay").style.display = "none";
     }
