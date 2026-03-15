@@ -285,9 +285,9 @@ function generateAndShowQR() {
             return;
         }
         
-        // 💡 핵심 처방: 순수 텍스트 대신 '문자 메시지(SMS)' 규격으로 포장
-        // 이렇게 하면 스마트폰이 오지랖(검색)을 안 부리고 바로 '메시지 작성'으로 연결합니다.
-        const smsFormat = "sms:?body=" + encodeURIComponent(currentQRText);
+        // 💡 플랜 F: 아이폰 AI의 오해를 원천 차단하는 '메일 본문' 규격
+        // 제목(Subject)을 넣어줌으로써 '연락처'로 오인할 확률을 0%로 만듭니다.
+        const mailFormat = "mailto:?subject=" + encodeURIComponent("[SNUBH] 직장암 치료 로드맵") + "&body=" + encodeURIComponent(currentQRText);
         
         document.getElementById("qr-overlay").style.display = "flex";
         
@@ -295,25 +295,21 @@ function generateAndShowQR() {
             try {
                 QRCode.toCanvas(
                     document.getElementById("qrcode"), 
-                    smsFormat, // 💡 가공된 SMS 규격 데이터를 주입
+                    mailFormat, // 💡 메일 규격 데이터 주입
                     {
-                        width: 250,
-                        margin: 4, // 인식률을 높이기 위해 여백을 조금 더 줌
-                        errorCorrectionLevel: 'M', // SMS 규격은 M 레벨이 가장 안정적입니다
+                        width: 260,
+                        margin: 3,
+                        errorCorrectionLevel: 'L', // 데이터가 많으므로 복원율을 낮춰 밀도를 최적화
                         color: { dark: '#000000', light: '#ffffff' }
                     }, 
                     function (error) {
-                        if (error) alert("QR 생성 실패: " + error);
+                        if (error) alert("QR 변환 오류: " + error);
                     }
                 );
             } catch (error) {
-                alert("오류: " + error.message);
+                alert("렌더링 오류: " + error.message);
             }
         }, 100); 
-    }
-
-    function closeQR() {
-        document.getElementById("qr-overlay").style.display = "none";
     }
 </script>
 </body>
