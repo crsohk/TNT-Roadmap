@@ -118,13 +118,13 @@
         <h2 style="color: var(--apple-red); font-size: 18px; margin-top: 0; margin-bottom: 10px; letter-spacing: -0.05em;">⚠️ 일정 안내</h2>
         <p style="margin-bottom: 20px; font-size: 14px; font-weight: 700; color: #1d1d1f; line-height: 1.4;">환자분의 스마트폰 기본 카메라로<br>아래 QR 코드를 비춰주세요.</p>
         
-        <canvas id="qrcode" style="display: block; margin: 0 auto 20px auto; padding: 15px; background: #f5f5f7; border-radius: 12px;"></canvas>
+        <canvas id="qrcode" style="display: block; margin: 0 auto 20px auto; border-radius: 8px;"></canvas>
         
         <button onclick="closeQR()" style="padding: 12px 0; width: 100%; background: #007aff; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer;">확인 및 닫기</button>
     </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -289,19 +289,31 @@
         
         setTimeout(function() {
             try {
-                if (typeof QRious === 'undefined') {
-                    alert("QR 엔진이 로드되지 않았습니다. 인터넷 연결을 확인하거나 새로고침 해보세요.");
+                if (typeof QRCode === 'undefined') {
+                    alert("QR 엔진이 로드되지 않았습니다. 새로고침 해보세요.");
                     document.getElementById("qr-overlay").style.display = "none";
                     return;
                 }
 
-                // 💡 대용량 처리가 가능한 QRious 실행 로직
-                new QRious({
-                    element: document.getElementById("qrcode"),
-                    value: currentQRText,
-                    size: 220,
-                    level: 'L' // 데이터 수용량을 최대로 늘리기 위해 복원율을 'Low'로 설정
-                });
+                // 💡 카메라 인식률을 극대화한 한국어 완벽 인코딩 렌더링
+                QRCode.toCanvas(
+                    document.getElementById("qrcode"), 
+                    currentQRText, 
+                    {
+                        width: 250,         // 모바일 팝업창 크기에 딱 맞춘 최적의 해상도
+                        margin: 2,          // 스캐너가 QR을 쉽게 찾도록 흰색 테두리 확보
+                        errorCorrectionLevel: 'L',
+                        color: {
+                            dark: '#000000',
+                            light: '#ffffff'
+                        }
+                    }, 
+                    function (error) {
+                        if (error) {
+                            alert("QR 데이터 변환 중 오류: " + error);
+                        }
+                    }
+                );
             } catch (error) {
                 alert("QR 렌더링 오류 상세 원인: " + error.message);
             }
