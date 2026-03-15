@@ -279,37 +279,35 @@
         document.getElementById('qrButton').style.display = 'flex';
     }
 
-    function generateAndShowQR() {
+function generateAndShowQR() {
         if (!currentQRText) {
             alert("먼저 날짜를 입력하여 스케줄을 계산해 주세요.");
             return;
         }
         
+        // 💡 핵심 처방: 순수 텍스트 대신 '문자 메시지(SMS)' 규격으로 포장
+        // 이렇게 하면 스마트폰이 오지랖(검색)을 안 부리고 바로 '메시지 작성'으로 연결합니다.
+        const smsFormat = "sms:?body=" + encodeURIComponent(currentQRText);
+        
         document.getElementById("qr-overlay").style.display = "flex";
         
         setTimeout(function() {
             try {
-                if (typeof QRCode === 'undefined') {
-                    alert("QR 엔진이 로드되지 않았습니다. 인터넷 연결을 확인하거나 새로고침 해보세요.");
-                    document.getElementById("qr-overlay").style.display = "none";
-                    return;
-                }
-
                 QRCode.toCanvas(
                     document.getElementById("qrcode"), 
-                    currentQRText, 
+                    smsFormat, // 💡 가공된 SMS 규격 데이터를 주입
                     {
                         width: 250,
-                        margin: 2,
-                        errorCorrectionLevel: 'L',
+                        margin: 4, // 인식률을 높이기 위해 여백을 조금 더 줌
+                        errorCorrectionLevel: 'M', // SMS 규격은 M 레벨이 가장 안정적입니다
                         color: { dark: '#000000', light: '#ffffff' }
                     }, 
                     function (error) {
-                        if (error) alert("QR 데이터 변환 중 오류: " + error);
+                        if (error) alert("QR 생성 실패: " + error);
                     }
                 );
             } catch (error) {
-                alert("QR 렌더링 오류 상세 원인: " + error.message);
+                alert("오류: " + error.message);
             }
         }, 100); 
     }
