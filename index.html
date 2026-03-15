@@ -124,7 +124,7 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.4.4/qrcode.min.js"></script>
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -290,28 +290,22 @@
         setTimeout(function() {
             try {
                 if (typeof QRCode === 'undefined') {
-                    alert("QR 엔진이 로드되지 않았습니다. 새로고침 해보세요.");
+                    alert("QR 엔진이 로드되지 않았습니다. 인터넷 연결을 확인하거나 새로고침 해보세요.");
                     document.getElementById("qr-overlay").style.display = "none";
                     return;
                 }
 
-                // 💡 카메라 인식률을 극대화한 한국어 완벽 인코딩 렌더링
                 QRCode.toCanvas(
                     document.getElementById("qrcode"), 
                     currentQRText, 
                     {
-                        width: 250,         // 모바일 팝업창 크기에 딱 맞춘 최적의 해상도
-                        margin: 2,          // 스캐너가 QR을 쉽게 찾도록 흰색 테두리 확보
+                        width: 250,
+                        margin: 2,
                         errorCorrectionLevel: 'L',
-                        color: {
-                            dark: '#000000',
-                            light: '#ffffff'
-                        }
+                        color: { dark: '#000000', light: '#ffffff' }
                     }, 
                     function (error) {
-                        if (error) {
-                            alert("QR 데이터 변환 중 오류: " + error);
-                        }
+                        if (error) alert("QR 데이터 변환 중 오류: " + error);
                     }
                 );
             } catch (error) {
