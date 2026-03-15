@@ -284,39 +284,40 @@
     }
 
 function generateAndShowQR() {
-        try {
-            if (!currentQRText) {
-                alert("먼저 날짜를 입력하여 스케줄을 계산해 주세요.");
-                return;
-            }
-            
-            // 💡 핵심 수술: 팝업창(도화지)을 '먼저' 화면에 펼칩니다. (Safari 렌더링 버그 원천 차단)
-            document.getElementById("qr-overlay").style.display = "flex";
-            
-            // 💡 PWA 오프라인 캐시 문제로 엔진이 로드되지 않았을 때의 안전장치
-            if (typeof QRCode === 'undefined') {
-                alert("QR 엔진이 로드되지 않았습니다. Safari에서 새로고침을 한 번 진행해 주세요.");
-                document.getElementById("qr-overlay").style.display = "none";
-                return;
-            }
-
-            // 도화지가 펼쳐진 상태에서 안심하고 QR을 그려넣습니다.
-            document.getElementById("qrcode").innerHTML = "";
-            new QRCode(document.getElementById("qrcode"), {
-                text: currentQRText,
-                width: 200,
-                height: 200,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.M
-            });
-            
-        } catch (error) {
-            alert("QR 생성 중 모바일 환경 오류가 발생했습니다: " + error.message);
+        if (!currentQRText) {
+            alert("먼저 날짜를 입력하여 스케줄을 계산해 주세요.");
+            return;
         }
+        
+        // 💡 1. 팝업창(도화지)을 화면에 먼저 펼칩니다.
+        document.getElementById("qr-overlay").style.display = "flex";
+        
+        // 💡 2. 사파리가 화면을 그릴 시간을 0.1초(100ms) 벌어준 뒤 QR을 생성합니다.
+        setTimeout(function() {
+            try {
+                if (typeof QRCode === 'undefined') {
+                    alert("QR 엔진이 로드되지 않았습니다. 인터넷 연결을 확인하거나 새로고침 해보세요.");
+                    document.getElementById("qr-overlay").style.display = "none";
+                    return;
+                }
+
+                document.getElementById("qrcode").innerHTML = "";
+                new QRCode(document.getElementById("qrcode"), {
+                    text: currentQRText,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.M
+                });
+            } catch (error) {
+                // 어떤 에러인지 정확히 확인하기 위해 상세 메시지를 띄웁니다.
+                alert("QR 렌더링 오류 상세 원인: " + error.message);
+            }
+        }, 100); // 100 밀리초(0.1초) 지연
     }
 
-    // 닫기 버튼 로직 (그대로 유지)
+    // 닫기 버튼 로직
     function closeQR() {
         document.getElementById("qr-overlay").style.display = "none";
     }
